@@ -225,9 +225,8 @@ where
         for pos in 0..4 {
             digi::write!(self.col4, self.col3, self.col2, self.col1 => 4 bit => 1 << pos);
 
-            let key = self.read_key(pos);
-            if key.is_some() {
-                buf[count] = key.unwrap();
+            if let Some(key) = self.read_key(pos) {
+                buf[count] = key;
                 count += 1;
             }
         }
