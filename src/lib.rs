@@ -167,7 +167,7 @@ where
         digi::write!(self.col1, self.col2, self.col3, self.col4 => true);
     }
 
-    fn read_char(&self, col: usize) -> Option<u8> {
+    fn read_key(&self, col: usize) -> Option<u8> {
         let key = digi::read!(u8; self.row4, self.row3, self.row2, self.row1);
 
         match key {
@@ -204,7 +204,7 @@ where
         for pos in 0..4 {
             digi::write!(self.col4, self.col3, self.col2, self.col1 => 4 bit => 1 << pos);
 
-            if let Some(key) = self.read_char(pos) {
+            if let Some(key) = self.read_key(pos) {
                 self.reset();
                 return Some(key);
             }
@@ -225,10 +225,11 @@ where
         for pos in 0..4 {
             digi::write!(self.col4, self.col3, self.col2, self.col1 => 4 bit => 1 << pos);
 
-            self.read_char(pos).map(|key| {
-                buf[count] = key;
+            let key = self.read_key(pos);
+            if key.is_some() {
+                buf[count] = key.unwrap();
                 count += 1;
-            });
+            }
         }
 
         self.reset();
